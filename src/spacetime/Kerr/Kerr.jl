@@ -1,5 +1,6 @@
 module Kerr
 using StaticArrays
+using Parameters
 using ForwardDiff: Dual, Partials, partials
 
 include(joinpath(@__DIR__, "..", "spacetime_types.jl"))

@@ -2,7 +2,7 @@
 # Parámetros de Kerr (métrica Kerr-Schild,
 # coords cartesianas q = (t, x, y, z))
 # =====================================================================
-@with_kw struct KerrSchildCoordinates{T<:Union{Float32,Float64}} <: AbstractKerrSpacetime
+#=@with_kw=# struct KerrSchildCoordinates{T<:Union{Float32,Float64}} <: AbstractKerrSpacetime
     M::T
     a::T
 
@@ -124,12 +124,11 @@ end
     x = SVector{4}(u[1], u[2], u[3], u[4])
     T = eltype(x)
 
-    rd = SVector{4}(ntuple(i -> Dual{Nothing,T,4}(x[i], Partials(ntuple(j -> T(i == j), 4))),4) )
+    xd = SVector{4}(ntuple(i -> Dual{Nothing,T,4}(x[i], Partials(ntuple(j -> T(i == j), 4))),4) )
 
-    gd  = metric(k, rd)         # SMatrix{4,4,Dual}
+    gd  = metric(k, xd)         # SMatrix{4,4,Dual}
     ∂g  = partials.(gd)         # ∂g[μ,ν][σ] = ∂g_{μν}/∂x^σ
     ginv = metric_inv(k, x)
 
     return @SArray [_Γcomp(ginv, ∂g, λ, μ, ν) for λ in 1:4, μ in 1:4, ν in 1:4]
 end
-

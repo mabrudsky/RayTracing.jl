@@ -1,3 +1,3 @@
-include("Kerr/kerr.jl")
+include("Kerr/Kerr.jl")
 using .Kerr
 
