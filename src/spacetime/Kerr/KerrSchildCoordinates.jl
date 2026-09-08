@@ -2,7 +2,7 @@
 # Parámetros de Kerr (métrica Kerr-Schild,
 # coords cartesianas q = (t, x, y, z))
 # =====================================================================
-#=@with_kw=# struct KerrSchildCoordinates{T<:Union{Float32,Float64}} <: AbstractKerrSpacetime
+@with_kw struct KerrSchildCoordinates{T<:Union{Float32,Float64}} <: AbstractKerrSpacetime
     M::T
     a::T
 
