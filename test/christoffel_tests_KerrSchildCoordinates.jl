@@ -27,4 +27,5 @@ k  = KerrSchildCoordinates(M=1.0, a=0.5)
 u  = SA[0.0, 3.0, 0.0, 1.0]
 
 ∇g = covariant_derivative_metric(k, u)
+@show size(∇g)
 println("máximo |∇g| = ", maximum(abs.(∇g)))
