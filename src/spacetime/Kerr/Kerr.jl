@@ -1,10 +1,10 @@
-module kerr
+module Kerr
 using StaticArrays
 using Parameters
 using ForwardDiff: Dual, Partials, partials
 
 include(joinpath(@__DIR__, "..", "spacetime_types.jl"))
-
+include(joinpath(@__DIR__, "..", "christoffel.jl"))
 
 #------------------------------- spacetime --------------------------------- 
 include("KerrSchildCoordinates.jl")

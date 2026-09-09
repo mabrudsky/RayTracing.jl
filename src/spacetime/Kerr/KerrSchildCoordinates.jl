@@ -15,7 +15,7 @@ KerrSchildCoordinates(M::Real, a::Real) = throw(ArgumentError("Spacetime paramet
 # auxiliar interno (no exportado): calcula el escalar H y el vector
 # nulo l_μ, compartidos entre metric() y metric_inv().
 # =====================================================================
-@inline function H_l(k::KerrSchildCoordinates, point::SVector{4,T}) where T
+@inline function _H_l(k::KerrSchildCoordinates, point::SVector{4,T}) where T
     t, x, y, z = point
     
     a = k.a
@@ -40,7 +40,7 @@ end
 #    Genérica en T: acepta Float32/Float64 o Dual (para christoffel).
 # =====================================================================
 @inline function metric(k::KerrSchildCoordinates, point::SVector{4,T}) where T
-    _2H, l = H_l(k, point)
+    _2H, l = _H_l(k, point)
     
     g11 = - one(T) + _2H * l[1]*l[1]
     g12 = _2H * l[1]*l[2]
@@ -62,25 +62,23 @@ end
     g43 = g34
     g44 = one(T) + _2H * l[4]*l[4]    
 
-    return SMatrix{4, 4, T, 16}(g11,  g12,  g13,  g14, 
-                                g21,  g22,  g23,  g24, 
-                                g31,  g32,  g33,  g34, 
-                                g41,  g42,  g43,  g44)
+    return SMatrix{4, 4, T, 16}(g11, g21, g31, g41, 
+                                g12, g22, g32, g42, 
+                                g13, g23, g33, g43, 
+                                g14, g24, g34, g44)
 end
 
-# =====================================================================
-# 2) metric_inv(k, x) -> g^{μν}
-#    Kerr-Schild admite inversa analítica exacta (Sherman-Morrison,
-#    ya que l es nulo respecto de η): g^{μν} = η^{μν} - H l^μ l^ν,
-#    con l^μ = η^{μν} l_ν = (-l_t, l_x, l_y, l_z).
-# =====================================================================
+# ===============================================================#
+# 2) metric_inverse(k, x) -> g^{μν} = η^{μν} - 2H l^μ l^ν        #
+#  with l^μ = η^{μν} l_ν = (-1, l^i) (η^{μν} = diag(-1, 1, 1, 1))#
+# ===============================================================#
 @inline function metric_inverse(k::KerrSchildCoordinates, point::SVector{4,T}) where T
-    _2H, l = H_l(k, point)
+    _2H, l = _H_l(k, point)
 
     g11 = -one(T) - _2H * l[1] * l[1]
-    g12 = - _2H * l[1] * l[2]
-    g13 = - _2H * l[1] * l[3]
-    g14 = - _2H * l[1] * l[4]
+    g12 =  _2H * l[1] * l[2]
+    g13 =  _2H * l[1] * l[3]
+    g14 =  _2H * l[1] * l[4]
     
     g21 = g12
     g22 = one(T) - _2H * l[2] * l[2]
@@ -97,34 +95,16 @@ end
     g43 = g34
     g44 = one(T) - _2H * l[4] * l[4]
 
-    return SMatrix{4, 4, T, 16}(g11,  g12,  g13,  g14, 
-                                g21,  g22,  g23,  g24, 
-                                g31,  g32,  g33,  g34, 
-                                g41,  g42,  g43,  g44)
+
+    return SMatrix{4, 4, T, 16}(g11, g21, g31, g41, 
+                                g12, g22, g32, g42, 
+                                g13, g23, g33, g43, 
+                                g14, g24, g34, g44)
 end
 
-# =====================================================================
-# 3) christoffel(k, u) -> Γ^λ_{μν}
-#    Deriva metric() en tiempo de ejecución vía Dual "multi-seed"
-#    (isbits -> compatible con kernels CUDA).
-# =====================================================================
-@inline function _Γcomp(ginv::SMatrix{4,4,T}, ∂g, λ::Int, μ::Int, ν::Int) where T
-    s  = ginv[λ,1] * (∂g[1,ν][μ] + ∂g[1,μ][ν] - ∂g[μ,ν][1])
-    s += ginv[λ,2] * (∂g[2,ν][μ] + ∂g[2,μ][ν] - ∂g[μ,ν][2])
-    s += ginv[λ,3] * (∂g[3,ν][μ] + ∂g[3,μ][ν] - ∂g[μ,ν][3])
-    s += ginv[λ,4] * (∂g[4,ν][μ] + ∂g[4,μ][ν] - ∂g[μ,ν][4])
-    return T(0.5) * s
-end
-
-@inline function christoffel(k::KerrSchildCoordinates, u)
-    x = SVector{4}(u[1], u[2], u[3], u[4])
-    T = eltype(x)
-
-    xd = SVector{4}(ntuple(i -> Dual{Nothing,T,4}(x[i], Partials(ntuple(j -> T(i == j), 4))),4) )
-
-    gd  = metric(k, xd)         # SMatrix{4,4,Dual}
-    ∂g  = partials.(gd)         # ∂g[μ,ν][σ] = ∂g_{μν}/∂x^σ
-    ginv = metric_inv(k, x)
-
-    return @SArray [_Γcomp(ginv, ∂g, λ, μ, ν) for λ in 1:4, μ in 1:4, ν in 1:4]
-end
+# ============================================================#
+# 3) christoffel(k, u) -> Γ^λ_{μν}                            #  
+#   Differentiates metric() at runtime via "multi-seed" Duals #
+#   (isbits -> compatible with CUDA kernels).                 #  
+# ============================================================#
+christoffel(k::KerrSchildCoordinates, u) = _christoffel(k, u)
