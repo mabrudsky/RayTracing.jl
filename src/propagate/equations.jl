@@ -31,6 +31,7 @@ function geodesic_equations(u::SVector{N,T}, p, t) where {N,T}
     #du7 = cond * a[3]
     #du8 = cond * a[4]
     
+    #du = cond .* vcat(momentum, a)
     du = vcat(momentum, a)
     return du
 end 
