@@ -13,46 +13,37 @@ end
 =#
 function geodesic_equations(u::SVector{N,T}, p, t) where {N,T}
     position = @SVector T[u[1], u[2], u[3], u[4]]
-    momentum = @SVector T[u[5], u[6], u[7], u[8]]
+    k = @SVector T[u[5], u[6], u[7], u[8]]  
 
-    mmT = momentum * momentum'   
+    kkT = k * k'   
      
     Γ = christoffel(p.spacetime, position) 
-    a = @SVector T[-sum(Γ[:, :, λ] .* mmT) for λ in 1:4]
+    a = @SVector T[-sum(Γ[:, :, λ] .* kkT) for λ in 1:4]    # Geodesic equation kᵃ∇ₐkᵇ=0 where k is the momentum of the photon.
 
     #cond = 1.0 # condition(u,p)
     
-    #du1 = cond * u[5] 
-    #du2 = cond * u[6]
-    #du3 = cond * u[7]
-    #du4 = cond * u[8]
-    #du5 = cond * a[1]
-    #du6 = cond * a[2]
-    #du7 = cond * a[3]
-    #du8 = cond * a[4]
-    
-    #du = cond .* vcat(momentum, a)
-    du = vcat(momentum, a)
+    #du = cond .* vcat(k, a)
+    du = vcat(k, a)
     return du
 end 
 
 function parallel_transport_equations(u::SVector{N,T}, p, t) where {N,T}
     position = @SVector T[u[1], u[2], u[3], u[4]]
-    momentum = @SVector T[u[5], u[6], u[7], u[8]]
+    k = @SVector T[u[5], u[6], u[7], u[8]]  
 
     ex = @SVector T[u[9], u[10], u[11], u[12]]
     ey = @SVector T[u[13], u[14], u[15], u[16]]
 
-    mmT = momentum * momentum'    
-    momentum_ex = momentum * ex'
-    momentum_ey = momentum * ey'
+    kkT = k * k'    
+    k_ex = k * ex'
+    k_ey = k * ey'
     
     Γ = christoffel(p.spacetime, position)
     
-    a   = @SVector T[-sum(Γ[:, :, λ] .* mmT) for λ in 1:4]
-    dex = @SVector T[-sum(Γ[:, :, λ] .* momentum_ex) for λ in 1:4]
-    dey = @SVector T[-sum(Γ[:, :, λ] .* momentum_ey) for λ in 1:4]
+    a   = @SVector T[-sum(Γ[:, :, λ] .* kkT) for λ in 1:4]   # Geodesic equation kᵃ∇ₐkᵇ=0 where k is the momentum of the photon. 
+    dex = @SVector T[-sum(Γ[:, :, λ] .* k_ex) for λ in 1:4]  # Parallel transport kᵃ∇ₐexᵇ=0 where ex is the rectangular coordinates of the image plane.            
+    dey = @SVector T[-sum(Γ[:, :, λ] .* k_ey) for λ in 1:4]  # Parallel transport kᵃ∇ₐeyᵇ=0 where ey is the rectangular coordinates of the image plane. 
 
-    du = vcat(momentum, a, dex, dey)
+    du = vcat(k, a, dex, dey)
     return du
 end
