@@ -29,20 +29,19 @@ end
 
 function parallel_transport_equations(u::SVector{N,T}, p, t) where {N,T}
     position = @SVector T[u[1], u[2], u[3], u[4]]
-    k = @SVector T[u[5], u[6], u[7], u[8]]  
-
+    k  = @SVector T[u[5], u[6], u[7], u[8]]  
     ex = @SVector T[u[9], u[10], u[11], u[12]]
     ey = @SVector T[u[13], u[14], u[15], u[16]]
 
-    kkT = k * k'    
-    k_ex = k * ex'
-    k_ey = k * ey'
+    _kkT  = k * k'    
+    _k_ex = k * ex'
+    _k_ey = k * ey'
     
     Γ = christoffel(p.spacetime, position)
     
-    a   = @SVector T[-sum(Γ[:, :, λ] .* kkT) for λ in 1:4]   # Geodesic equation kᵃ∇ₐkᵇ=0 where k is the momentum of the photon. 
-    dex = @SVector T[-sum(Γ[:, :, λ] .* k_ex) for λ in 1:4]  # Parallel transport kᵃ∇ₐexᵇ=0 where ex is the rectangular coordinates of the image plane.            
-    dey = @SVector T[-sum(Γ[:, :, λ] .* k_ey) for λ in 1:4]  # Parallel transport kᵃ∇ₐeyᵇ=0 where ey is the rectangular coordinates of the image plane. 
+    a   = @SVector T[-sum(Γ[:, :, λ] .* _kkT)  for λ in 1:4]  # Geodesic equation kᵃ∇ₐkᵇ=0 where k is the momentum of the photon. 
+    dex = @SVector T[-sum(Γ[:, :, λ] .* _k_ex) for λ in 1:4]  # Parallel transport kᵃ∇ₐexᵇ=0 where ex is the rectangular coordinates of the image plane.            
+    dey = @SVector T[-sum(Γ[:, :, λ] .* _k_ey) for λ in 1:4]  # Parallel transport kᵃ∇ₐeyᵇ=0 where ey is the rectangular coordinates of the image plane. 
 
     du = vcat(k, a, dex, dey)
     return du
