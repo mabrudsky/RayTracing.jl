@@ -1,8 +1,7 @@
 using Test
 using RayTracing
-using RayTracing.Kerr: KerrSchildCoordinates, metric, christoffel
-using ForwardDiff: Dual, Partials, partials
-using StaticArrays
+import ForwardDiff: Dual, Partials, partials
+import StaticArrays: SVector, @SVector, @SArray, @MArray
 
 @testset "Christoffel symbols - KerrSchildCoordinates" begin
 
@@ -14,7 +13,7 @@ using StaticArrays
         gd = metric(k, xd)
         ∂g = partials.(gd)
 
-        ∇g = zeros(T, 4, 4, 4)
+        ∇g = @MArray zeros(T, 4, 4, 4)
         for σ in 1:4, μ in 1:4, ν in 1:4
             s = ∂g[μ, ν][σ]
             for ρ in 1:4
@@ -28,13 +27,14 @@ using StaticArrays
     end
 
     # Test case: Verify that the covariant derivative of the metric is zero for KerrSchildCoordinates
-    spacetime = KerrSchildCoordinates(M=1.0, a=0.5)
-    u = @SArray [0.0, 3.0, 0.0, 1.0]
+    spacetime = Kerr.KerrSchildCoordinates(M=1.0, a=0.5)
+    u = @SArray [0.1, 3.0, 0.05, 1.0]
 
     ∇g = covariant_derivative_metric(spacetime, u)
 
     # Verify that the maximum value of |∇g| is zero within floating-point tolerance
     @test maximum(abs.(∇g)) ≈ 0 atol=1e-12  # Equivalent to @test isapprox(maximum(abs.(∇g)), 0; atol=1e-12)
+    println("Maximum value of |∇g|: ", maximum(abs.(∇g)))
 end
 
     
