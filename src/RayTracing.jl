@@ -1,4 +1,8 @@
 module RayTracing
+using StaticArrays
+using Parameters
+import ForwardDiff: Dual, Partials, partials
+
 include("spacetime/spacetime.jl")
 
 # Export spacetime module

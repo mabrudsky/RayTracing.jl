@@ -14,7 +14,7 @@ struct ChristoffelTag <: AbstractChristoffel end
 end
 
 
-@inline function _christoffel(k::AbstractSpacetime, position::SVector{N,T}) where {N,T}
+@inline function _christoffel(k::AbstractSpacetime, position::SVector{4,T}) where T
     xd = SVector{4, Dual{ChristoffelTag,T,4}}(ntuple(i -> Dual{ChristoffelTag,T,4}(position[i], Partials(ntuple(j -> T(i == j), 4))), 4))
     
     gd   = metric(k, xd)         # SMatrix{4,4,Dual}

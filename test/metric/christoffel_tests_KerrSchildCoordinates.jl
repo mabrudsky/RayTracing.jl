@@ -1,5 +1,5 @@
-using Test
 using RayTracing
+import Test: @testset, @test
 import ForwardDiff: Dual, Partials, partials
 import StaticArrays: SVector, @SVector, @SArray, @MArray
 

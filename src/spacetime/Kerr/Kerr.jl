@@ -1,10 +1,7 @@
 module Kerr
 using StaticArrays
 using Parameters
-using ForwardDiff: Dual, Partials, partials
-
-include(joinpath(@__DIR__, "..", "spacetime_types.jl"))
-include(joinpath(@__DIR__, "..", "christoffel.jl"))
+using ..RayTracing: AbstractSpacetime, AbstractKerrSpacetime, AbstractChristoffel, ChristoffelTag, _Γcomp, _christoffel
 
 #------------------------------- spacetime --------------------------------- 
 include("KerrSchildCoordinates.jl")
