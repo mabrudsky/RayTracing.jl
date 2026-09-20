@@ -1,6 +1,6 @@
 module RayTracing
-using StaticArrays
-using Parameters
+import StaticArrays: @SArray, SVector
+import Parameters: @with_kw
 import ForwardDiff: Dual, Partials, partials
 
 include("spacetime/spacetime.jl")

@@ -1,7 +1,7 @@
-# =====================================================================
-# Parámetros de Kerr (métrica Kerr-Schild,
-# coords cartesianas q = (t, x, y, z))
-# =====================================================================
+# ========================================#
+# Kerr parameters (Kerr-Schild metric,    #  
+# Cartesian coordinates q = (t, x, y, z)) #
+# ========================================#
 @with_kw struct KerrSchildCoordinates{T<:Union{Float32,Float64}} <: AbstractKerrSpacetime
     M::T
     a::T
@@ -11,10 +11,10 @@ end
 
 KerrSchildCoordinates(M::Real, a::Real) = throw(ArgumentError("Spacetime parameters must be Float32 or Float64 (both the same type); got M::$(typeof(M)), a::$(typeof(a))."))
 
-# =====================================================================
-# auxiliar interno (no exportado): calcula el escalar H y el vector
-# nulo l_μ, compartidos entre metric() y metric_inv().
-# =====================================================================
+# ===============================================================================# 
+# internal auxiliary (not exported): calculates the scalar H and the null vector #
+# l, shared between metric() and metric_inv().                                   #
+# ===============================================================================#
 @inline function _H_l(k::KerrSchildCoordinates, point::SVector{4,T}) where T
     t, x, y, z = point
     
@@ -35,10 +35,10 @@ KerrSchildCoordinates(M::Real, a::Real) = throw(ArgumentError("Spacetime paramet
     return _2H, SVector(l1, l2, l3, l4)
 end
    
-# =====================================================================
-# 1) metric(k, x) -> g_{μν}   (x = (t, x, y, z))
-#    Genérica en T: acepta Float32/Float64 o Dual (para christoffel).
-# =====================================================================
+# ====================================================================#
+# 1) metric(k, point) -> g_{μν}   (point = (t, x, y, z))              #  
+#    Generic in T: accepts Float32/Float64 or Dual (for christoffel). #
+# ====================================================================#
 @inline function metric(k::KerrSchildCoordinates, point::SVector{4,T}) where T
     _2H, l = _H_l(k, point)
     
@@ -69,7 +69,7 @@ end
 end
 
 # ===============================================================#
-# 2) metric_inverse(k, x) -> g^{μν} = η^{μν} - 2H l^μ l^ν        #
+# 2) metric_inverse(k, point) -> g^{μν} = η^{μν} - 2H l^μ l^ν    #
 #  with l^μ = η^{μν} l_ν = (-1, l^i) (η^{μν} = diag(-1, 1, 1, 1))#
 # ===============================================================#
 @inline function metric_inverse(k::KerrSchildCoordinates, point::SVector{4,T}) where T
@@ -103,7 +103,7 @@ end
 end
 
 #========================================================#
-# 3) christoffel(k, u) -> Γ^λ_{μν}                       #  
+# 3) christoffel(k, point) -> Γ^λ_{μν}                   #  
 #    Differentiates metric() at runtime via "multi-seed" #
 #    Duals (isbits -> compatible with CUDA kernels).     #  
 #========================================================#

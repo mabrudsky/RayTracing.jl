@@ -28,10 +28,14 @@ function geodesic_equations(u::SVector{N,T}, p, t) where {N,T}
 end 
 
 function parallel_transport_equations(u::SVector{N,T}, p, t) where {N,T}
-    position = @SVector T[u[1], u[2], u[3], u[4]]
-    k  = @SVector T[u[5], u[6], u[7], u[8]]  
-    ex = @SVector T[u[9], u[10], u[11], u[12]]
-    ey = @SVector T[u[13], u[14], u[15], u[16]]
+    @inbounds begin
+        @views begin
+            position = @SVector T[u[1], u[2], u[3], u[4]]
+            k  = @SVector T[u[5], u[6], u[7], u[8]]  
+            ex = @SVector T[u[9], u[10], u[11], u[12]]
+            ey = @SVector T[u[13], u[14], u[15], u[16]]
+        end
+    end
 
     _kkT  = k * k'    
     _k_ex = k * ex'
