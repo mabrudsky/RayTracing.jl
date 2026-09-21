@@ -11,7 +11,7 @@ function condition(u,p)
    return (Rmin2 <= r2) * (Rmax2 >= r2) * 1.0f0
 end
 =#
-function geodesic_equations(u::SVector{N,T}, p, t) where {N,T}
+function geodesic_equations_Vacuum(u::SVector{N,T}, p, t) where {N,T}
     position = @SVector T[u[1], u[2], u[3], u[4]]
     k = @SVector T[u[5], u[6], u[7], u[8]]  
 
@@ -27,7 +27,7 @@ function geodesic_equations(u::SVector{N,T}, p, t) where {N,T}
     return du
 end 
 
-function parallel_transport_equations(u::SVector{N,T}, p, t) where {N,T}
+function parallel_transport_equations_Vacuum(u::SVector{N,T}, p, t) where {N,T}
     @inbounds begin
         @views begin
             position = @SVector T[u[1], u[2], u[3], u[4]]

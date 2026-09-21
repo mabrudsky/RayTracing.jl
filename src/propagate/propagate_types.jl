@@ -1,1 +1,1 @@
-abstract type AbstractPropagate end
+abstract type AbstractEnsembleProblem <: AbstractPropagate end
