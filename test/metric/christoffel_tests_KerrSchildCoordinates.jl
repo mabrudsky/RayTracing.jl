@@ -14,6 +14,7 @@ import StaticArrays: SVector, @SVector, @SArray, @MArray
         ∂g = partials.(gd)
 
         ∇g = @MArray zeros(T, 4, 4, 4)
+        @show size(∇g)
         for σ in 1:4, μ in 1:4, ν in 1:4
             s = ∂g[μ, ν][σ]
             for ρ in 1:4

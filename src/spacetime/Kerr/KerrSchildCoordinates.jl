@@ -8,7 +8,6 @@
     @assert M >= zero(T) "M must be non-negative"
     @assert abs(a) <= M "|a| must be smaller than M"
 end
-
 KerrSchildCoordinates(M::Real, a::Real) = throw(ArgumentError("Spacetime parameters must be Float32 or Float64 (both the same type); got M::$(typeof(M)), a::$(typeof(a))."))
 
 # ===============================================================================# 
@@ -32,7 +31,7 @@ KerrSchildCoordinates(M::Real, a::Real) = throw(ArgumentError("Spacetime paramet
     l3 = (r*y - a*x) / (r2 + A2)
     l4 = z / r
 
-    return _2H, SVector(l1, l2, l3, l4)
+    return _2H, SVector{4,T}(l1, l2, l3, l4)
 end
    
 # ====================================================================#

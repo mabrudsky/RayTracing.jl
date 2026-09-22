@@ -12,8 +12,10 @@ function condition(u,p)
 end
 =#
 function geodesic_equations_Vacuum(u::SVector{N,T}, p, t) where {N,T}
-    position = @SVector T[u[1], u[2], u[3], u[4]]
-    k = @SVector T[u[5], u[6], u[7], u[8]]  
+    @inbounds begin
+        position = SVector{4,T}(u[1], u[2], u[3], u[4])
+        k = SVector{4,T}(u[5], u[6], u[7], u[8])
+    end
 
     kkT = k * k'   
      
@@ -29,12 +31,10 @@ end
 
 function parallel_transport_equations_Vacuum(u::SVector{N,T}, p, t) where {N,T}
     @inbounds begin
-        @views begin
-            position = @SVector T[u[1], u[2], u[3], u[4]]
-            k  = @SVector T[u[5], u[6], u[7], u[8]]  
-            ex = @SVector T[u[9], u[10], u[11], u[12]]
-            ey = @SVector T[u[13], u[14], u[15], u[16]]
-        end
+        position = SVector{4,T}(u[1], u[2], u[3], u[4])
+        k  = SVector{4,T}(u[5], u[6], u[7], u[8])
+        ex = SVector{4,T}(u[9], u[10], u[11], u[12])
+        ey = SVector{4,T}(u[13], u[14], u[15], u[16])
     end
 
     _kkT  = k * k'    

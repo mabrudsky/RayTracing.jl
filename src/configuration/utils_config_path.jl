@@ -1,3 +1,4 @@
+#=
 function config_path(parameter::run_parameter, t::Int)
   FRAC        = parameter.FRAC
   COMP        = parameter.COMP
@@ -87,3 +88,5 @@ function config_path(parameter::run_parameter, t::Int)
   end
   return (path_data_ONION, path_data_ONION_filt_int, path_data_save_IO, path_meta_file, path_data_save_skymap_2000_1000, path_save_plot_skymap_2000_1000, path_data_save_total_skymap_2000_1000)  
 end
+
+=#

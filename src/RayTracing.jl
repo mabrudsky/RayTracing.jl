@@ -1,7 +1,7 @@
 module RayTracing
-import StaticArrays: @SArray, SVector
 import Parameters: @with_kw
 import ForwardDiff: Dual, Partials, partials
+using StaticArrays
 using KernelAbstractions
 
 include("RayTracing_types.jl")
