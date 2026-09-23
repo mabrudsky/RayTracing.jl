@@ -5,6 +5,7 @@
 @with_kw struct KerrSchildCoordinates{T<:Union{Float32,Float64}} <: AbstractKerrSpacetime
     M::T
     a::T
+    topology::CartesianCoordinate = CartesianCoordinate()
     @assert M >= zero(T) "M must be non-negative"
     @assert abs(a) <= M "|a| must be smaller than M"
 end
@@ -12,7 +13,7 @@ KerrSchildCoordinates(M::Real, a::Real) = throw(ArgumentError("Spacetime paramet
 
 # ===============================================================================# 
 # internal auxiliary (not exported): calculates the scalar H and the null vector #
-# l, shared between metric() and metric_inv().                                   #
+# l, shared between metric() and metric_inverse().                               #
 # ===============================================================================#
 @inline function _H_l(k::KerrSchildCoordinates, point::SVector{4,T}) where T
     t, x, y, z = point

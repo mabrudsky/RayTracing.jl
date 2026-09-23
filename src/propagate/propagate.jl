@@ -1,4 +1,4 @@
 include("propagate_types.jl")
 include("equations.jl")
-include("callback.jl")
-include("ensemble.jl")
+include("Callback/callback.jl")
+include("Ensemble_problem/ensemble.jl")

@@ -10,7 +10,7 @@ include("spacetime/spacetime.jl")
 include("propagate/propagate.jl")   
 
 # Export spacetime module
-export Kerr
+export kerr
 
 # Export spacetime functions
 export metric, metric_inverse, christoffel
