@@ -1,9 +1,12 @@
 abstract type AbstractChristoffel end
 struct ChristoffelTag <: AbstractChristoffel end
-#struct Christoffel <: AbstractChristoffel end  
+
+""" Declare "christoffel" here first, with no implementation yet,
+    so that every spacetime module (Kerr, Schwarzschild, etc.) adds
+    to this SAME function instead of each one creating its own.
+"""
+function christoffel end
 #============================================================================================================#
-
-
 @inline function _Γcomp(ginv::SMatrix{4,4,T}, ∂g, λ::Int, μ::Int, ν::Int) where T
     s = zero(T)
     @inbounds for α in 1:4

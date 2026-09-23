@@ -1,9 +1,9 @@
-@kwdef struct IntegrationParameters{S <: AbstractSpacetime, M <: AbstractPhysicalModel} <: AbstractConfiguration
+@with_kw struct IntegrationParameters{S <: AbstractSpacetime, M <: AbstractPhysicalModel} <: AbstractConfiguration
     spacetime::S
     model::M
 end
 
-@kwdef struct Configuration{N, T <: Union{Float32,Float64}, S <: AbstractSpacetime, E <: AbstractEnsembleProblem, B <: KernelAbstractions.Backend, M <: AbstractPhysicalModel} <: AbstractConfiguration
+@with_kw struct Configuration{N, T <: Union{Float32,Float64}, S <: AbstractSpacetime, E <: AbstractEquationSet, B <: KernelAbstractions.Backend, M <: AbstractPhysicalModel} <: AbstractConfiguration
     spacetime::S
     equations::E
     backend::B
