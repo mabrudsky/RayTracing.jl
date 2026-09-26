@@ -107,4 +107,4 @@ end
 #    Differentiates metric() at runtime via "multi-seed" #
 #    Duals (isbits -> compatible with CUDA kernels).     #  
 #========================================================#
-christoffel(spacetime::KerrSchildCoordinates, position::SVector{4,T}) where T = _christoffel(spacetime, position)
+christoffel(spacetime::KerrSchildCoordinates, position::SVector{4,T}) where T = _christoffel_ForwardDiff(spacetime, position)

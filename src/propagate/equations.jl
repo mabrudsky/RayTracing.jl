@@ -16,15 +16,10 @@ function geodesic_equations_Vacuum(u::SVector{N,T}, p, t) where {N,T}
         position = SVector{4,T}(u[1], u[2], u[3], u[4])
         k = SVector{4,T}(u[5], u[6], u[7], u[8])
     end
-
     kkT = k * k'   
-     
     Γ = christoffel(p.spacetime, position) 
     a = @SVector T[-sum(Γ[:, :, λ] .* kkT) for λ in 1:4]    # Geodesic equation kᵃ∇ₐkᵇ=0 where k is the momentum of the photon.
 
-    #cond = 1.0 # condition(u,p)
-    
-    #du = cond .* vcat(k, a)
     du = vcat(k, a)
     return du
 end 
