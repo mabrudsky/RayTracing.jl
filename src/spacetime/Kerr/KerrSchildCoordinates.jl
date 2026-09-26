@@ -1,7 +1,7 @@
-# ========================================#
-# Kerr parameters (Kerr-Schild metric,    #  
-# Cartesian coordinates q = (t, x, y, z)) #
-# ========================================#
+# ======================================== #
+# Kerr parameters (Kerr-Schild metric,     #  
+# Cartesian coordinates q = (t, x, y, z))  #
+# ======================================== #
 @with_kw struct KerrSchildCoordinates{T<:Union{Float32,Float64}} <: AbstractKerrSpacetime
     M::T
     a::T
@@ -11,15 +11,15 @@
 end
 KerrSchildCoordinates(M::Real, a::Real) = throw(ArgumentError("Spacetime parameters must be Float32 or Float64 (both the same type); got M::$(typeof(M)), a::$(typeof(a))."))
 
-# ===============================================================================# 
-# internal auxiliary (not exported): calculates the scalar H and the null vector #
-# l, shared between metric() and metric_inverse().                               #
-# ===============================================================================#
-@inline function _H_l(k::KerrSchildCoordinates, point::SVector{4,T}) where T
+# =============================================================================== # 
+# Internal auxiliary (not exported): calculates the scalar H and the null vector  #
+# l, shared between metric() and metric_inverse().                                #
+# =============================================================================== #
+@inline function _H_l(spacetime::KerrSchildCoordinates, point::SVector{4,T}) where T
     t, x, y, z = point
     
-    a = k.a
-    M = k.M
+    a = spacetime.a
+    M = spacetime.M
 
     A2   = a^2
     rho2 = x^2 + y^2 + z^2
@@ -35,12 +35,12 @@ KerrSchildCoordinates(M::Real, a::Real) = throw(ArgumentError("Spacetime paramet
     return _2H, SVector{4,T}(l1, l2, l3, l4)
 end
    
-# ====================================================================#
-# 1) metric(k, point) -> g_{μν}   (point = (t, x, y, z))              #  
-#    Generic in T: accepts Float32/Float64 or Dual (for christoffel). #
-# ====================================================================#
-@inline function metric(k::KerrSchildCoordinates, point::SVector{4,T}) where T
-    _2H, l = _H_l(k, point)
+# ==================================================================== #
+# 1) metric(k, point) -> g_{μν}   (point = (t, x, y, z))               #  
+#    Generic in T: accepts Float32/Float64 or Dual (for christoffel).  #
+# ==================================================================== #
+@inline function metric(spacetime::KerrSchildCoordinates, point::SVector{4,T}) where T
+    _2H, l = _H_l(spacetime, point)
     
     g11 = - one(T) + _2H * l[1]*l[1]
     g12 = _2H * l[1]*l[2]
@@ -68,12 +68,12 @@ end
                                 g14, g24, g34, g44)
 end
 
-# ===============================================================#
-# 2) metric_inverse(k, point) -> g^{μν} = η^{μν} - 2H l^μ l^ν    #
-#  with l^μ = η^{μν} l_ν = (-1, l^i) (η^{μν} = diag(-1, 1, 1, 1))#
-# ===============================================================#
-@inline function metric_inverse(k::KerrSchildCoordinates, point::SVector{4,T}) where T
-    _2H, l = _H_l(k, point)
+# =============================================================== #
+# 2) metric_inverse(k, point) -> g^{μν} = η^{μν} - 2H l^μ l^ν     #
+#  with l^μ = η^{μν} l_ν = (-1, l^i) (η^{μν} = diag(-1, 1, 1, 1)) #
+# =============================================================== #
+@inline function metric_inverse(spacetime::KerrSchildCoordinates, point::SVector{4,T}) where T
+    _2H, l = _H_l(spacetime, point)
 
     g11 = -one(T) - _2H * l[1] * l[1]
     g12 =  _2H * l[1] * l[2]
