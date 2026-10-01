@@ -1,4 +1,4 @@
-using RayTracing
+using RayTracingGR
 using Test
 
 @testset "RayTracing.jl" begin
