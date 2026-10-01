@@ -1,4 +1,4 @@
-module RayTracing
+module RayTracingGR
 import Parameters: @with_kw
 import ForwardDiff: Dual, Partials, partials
 using StaticArrays
